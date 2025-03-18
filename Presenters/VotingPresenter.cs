@@ -3,7 +3,6 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Security.Cryptography;
-using CleanCode_ExampleMVP.Models;
 
 namespace CleanCode_ExampleMVP.Presenters
 {
@@ -15,18 +14,13 @@ namespace CleanCode_ExampleMVP.Presenters
         private readonly SqlQueryExecutor _sqlExecutor;
 
         private IView _view;
-        private VotingModel _model;
         private DataTable _queryResult;
 
-        public VotingPresenter(IView view, VotingModel model)
+        public VotingPresenter(IView view)
         {
             if (view == null)
                 throw new ArgumentNullException();
 
-            if (model == null)
-                throw new ArgumentNullException();
-
-            _model = model;
             _view = view;
             _sqlExecutor = new SqlQueryExecutor();
         }
@@ -35,6 +29,7 @@ namespace CleanCode_ExampleMVP.Presenters
         {
             _view.ShowView();
             _view.TryingAccess += TryGetAccess;
+
             Application.Run();
         }
 
@@ -43,26 +38,31 @@ namespace CleanCode_ExampleMVP.Presenters
             if (string.IsNullOrEmpty(passport))
                 throw new ArgumentNullException();
 
-            _model.SetPassport(passport);
+            if (string.IsNullOrEmpty(passport))
+                _view.ShowMessage("Введите серию и номер паспорта!");
 
-            _queryResult = _sqlExecutor.ExecuteQuery($"select * from passports where num = '{Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(passport)))}' limit 1;");
+            if (passport.Length < 10)
+                _view.ShowMessage("Неверный формат серии или номера паспорта.");
+
+            try
+            {
+                _queryResult = _sqlExecutor.ExecuteQuery($"select * from passports where num = '{Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(passport)))}' limit 1;");
+            }
+            catch(Exception ex)
+            {
+                _view.ShowMessage(ex.Message.ToString());
+            }
+
 
             if (_queryResult.Rows.Count > 0)
-            {
-                _model.SetAccess(Convert.ToBoolean(_queryResult.Rows[0].ItemArray[1]));
-            }
+                _view.ShowMessage(BuildMessage(passport, Convert.ToBoolean(_queryResult.Rows[0].ItemArray[1])));
             else
-            {
-                _view.ShowMessage($"Паспорт «{_model.Passport}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
-                return;
-            }
-
-            _view.ShowMessage(BuildMessage());
+                _view.ShowMessage($"Паспорт «{passport}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
         }
 
-        private string BuildMessage()
+        private string BuildMessage(string passport, bool access)
         {
-            return string.Format($"По паспорту «{_model.Passport}» доступ к бюллетеню на дистанционном электронном голосовании {(_model.HaveAccess ? AccessAllowed : AccessDenied)}.");
+            return string.Format($"По паспорту «{passport}» доступ к бюллетеню на дистанционном электронном голосовании {(access ? AccessAllowed : AccessDenied)}.");
         }
     }
 }

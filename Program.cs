@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using CleanCode_ExampleMVP.Models;
 using CleanCode_ExampleMVP.Presenters;
 
 namespace CleanCode_ExampleMVP
@@ -15,7 +14,7 @@ namespace CleanCode_ExampleMVP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            VotingPresenter presenter = new VotingPresenter(new MainView(), new VotingModel());
+            VotingPresenter presenter = new VotingPresenter(new MainView());
             presenter.Run();
         }
     }
