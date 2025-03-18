@@ -1,20 +1,18 @@
-﻿using System;
+﻿using CleanCode_ExampleMVP.Presenters;
+using System;
 using System.Windows.Forms;
 
 namespace CleanCode_ExampleMVP
 {
     public partial class MainView : Form, IView
     {
-        public event Action<string> TryingAccess;
+        private PresenterFactory _presenter;
 
-        public MainView()
+        public MainView(PresenterFactory factory)
         {
+            _presenter = factory.Create(this);
+
             InitializeComponent();
-        }
-
-        public void ShowView()
-        {
-            Show();
         }
 
         public void ShowMessage(string message)
@@ -24,7 +22,7 @@ namespace CleanCode_ExampleMVP
 
         private void checkButton_Click(object sender, EventArgs e)
         {
-            TryingAccess?.Invoke(passportTextbox.Text.Trim().Replace(" ", string.Empty));
+            _presenter.TryGetAccess(passportTextbox.Text.Trim().Replace(" ", string.Empty));
         }
     }
 }

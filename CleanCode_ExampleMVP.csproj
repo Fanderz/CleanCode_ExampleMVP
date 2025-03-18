@@ -85,7 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Models\Passport.cs" />
+    <Compile Include="Presenters\PresenterFactory.cs" />
     <Compile Include="Presenters\VotingPresenter.cs" />
+    <Compile Include="Services\HashCalculator.cs" />
     <Compile Include="Services\SqlQueryExecutor.cs" />
     <Compile Include="Views\MainView.cs">
       <SubType>Form</SubType>
@@ -121,9 +124,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

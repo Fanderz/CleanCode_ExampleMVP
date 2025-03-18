@@ -3,56 +3,32 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Security.Cryptography;
+using CleanCode_ExampleMVP.Services;
+using CleanCode_ExampleMVP.Models;
 
 namespace CleanCode_ExampleMVP.Presenters
 {
-    class VotingPresenter
+    class VotingPresenter : PresenterFactory
     {
         private const string AccessAllowed = "ПРЕДОСТАВЛЕН";
         private const string AccessDenied = "НЕ ПРЕДОСТАВЛЕН";
 
-        private readonly SqlQueryExecutor _sqlExecutor;
-
         private IView _view;
         private DataTable _queryResult;
 
-        public VotingPresenter(IView view)
+        public override PresenterFactory Create(IView view)
         {
             if (view == null)
                 throw new ArgumentNullException();
 
             _view = view;
-            _sqlExecutor = new SqlQueryExecutor();
+
+            return this;
         }
 
-        public void Run()
+        public override void TryGetAccess(string passport)
         {
-            _view.ShowView();
-            _view.TryingAccess += TryGetAccess;
-
-            Application.Run();
-        }
-
-        private void TryGetAccess(string passport)
-        {
-            if (string.IsNullOrEmpty(passport))
-                throw new ArgumentNullException();
-
-            if (string.IsNullOrEmpty(passport))
-                _view.ShowMessage("Введите серию и номер паспорта!");
-
-            if (passport.Length < 10)
-                _view.ShowMessage("Неверный формат серии или номера паспорта.");
-
-            try
-            {
-                _queryResult = _sqlExecutor.ExecuteQuery($"select * from passports where num = '{Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(passport)))}' limit 1;");
-            }
-            catch(Exception ex)
-            {
-                _view.ShowMessage(ex.Message.ToString());
-            }
-
+            _queryResult = new Passport(passport).GetPassport();
 
             if (_queryResult.Rows.Count > 0)
                 _view.ShowMessage(BuildMessage(passport, Convert.ToBoolean(_queryResult.Rows[0].ItemArray[1])));
