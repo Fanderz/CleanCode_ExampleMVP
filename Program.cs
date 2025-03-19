@@ -14,7 +14,7 @@ namespace CleanCode_ExampleMVP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainView(new VotingPresenter()));
+            Application.Run(new MainView(new PresenterFactory()));
         }
     }
 }

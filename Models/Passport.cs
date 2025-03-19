@@ -21,11 +21,14 @@ namespace CleanCode_ExampleMVP.Models
             _passport = passport;
         }
 
-        public DataTable GetPassport()
+        public bool? GetPassport()
         {
             DataTable result = _sqlExecutor.ExecuteQuery($"select * from passports where num = '{HashCalculator.CalculateHash(_passport)}' limit 1;");
 
-            return result;
+            if (result.Rows.Count > 0)
+                return Convert.ToBoolean(result.Rows[0].ItemArray[1]);
+            else
+                return null;
         }
     }
 }

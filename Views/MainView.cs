@@ -1,12 +1,12 @@
-﻿using CleanCode_ExampleMVP.Presenters;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using CleanCode_ExampleMVP.Presenters;
 
 namespace CleanCode_ExampleMVP
 {
     public partial class MainView : Form, IView
     {
-        private PresenterFactory _presenter;
+        private VotingPresenter _presenter;
 
         public MainView(PresenterFactory factory)
         {

@@ -1,39 +1,38 @@
 ﻿using System;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
-using System.Security.Cryptography;
-using CleanCode_ExampleMVP.Services;
 using CleanCode_ExampleMVP.Models;
 
 namespace CleanCode_ExampleMVP.Presenters
 {
-    class VotingPresenter : PresenterFactory
+    public class VotingPresenter
     {
         private const string AccessAllowed = "ПРЕДОСТАВЛЕН";
         private const string AccessDenied = "НЕ ПРЕДОСТАВЛЕН";
 
         private IView _view;
-        private DataTable _queryResult;
 
-        public override PresenterFactory Create(IView view)
+        public VotingPresenter(IView view)
         {
-            if (view == null)
-                throw new ArgumentNullException();
-
             _view = view;
-
-            return this;
         }
 
-        public override void TryGetAccess(string passport)
+        public void TryGetAccess(string passport)
         {
-            _queryResult = new Passport(passport).GetPassport();
+            try
+            {
+                bool? hasAccess = new Passport(passport).GetPassport();
 
-            if (_queryResult.Rows.Count > 0)
-                _view.ShowMessage(BuildMessage(passport, Convert.ToBoolean(_queryResult.Rows[0].ItemArray[1])));
-            else
-                _view.ShowMessage($"Паспорт «{passport}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
+                if (hasAccess.HasValue == false)
+                {
+                    _view.ShowMessage($"Паспорт «{passport}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
+                    return;
+                }
+
+                _view.ShowMessage(BuildMessage(passport, hasAccess.Value));
+            }
+            catch(Exception ex)
+            {
+                _view.ShowMessage(ex.Message);
+            }
         }
 
         private string BuildMessage(string passport, bool access)
