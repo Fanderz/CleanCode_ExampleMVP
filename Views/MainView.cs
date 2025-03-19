@@ -22,7 +22,7 @@ namespace CleanCode_ExampleMVP
 
         private void checkButton_Click(object sender, EventArgs e)
         {
-            _presenter.TryGetAccess(passportTextbox.Text.Trim().Replace(" ", string.Empty));
+            _presenter.TryGetAccess(passportTextbox.Text);
         }
     }
 }

@@ -4,11 +4,8 @@ using CleanCode_ExampleMVP.Services;
 
 namespace CleanCode_ExampleMVP.Models
 {
-    class Passport
+    public class Passport
     {
-        private SqlQueryExecutor _sqlExecutor;
-        private string _passport;
-
         public Passport(string passport)
         {
             if (string.IsNullOrEmpty(passport))
@@ -17,18 +14,9 @@ namespace CleanCode_ExampleMVP.Models
             if (passport.Length < 10)
                 throw new ArgumentOutOfRangeException();
 
-            _sqlExecutor = new SqlQueryExecutor();
-            _passport = passport;
+            Number = passport.Trim().Replace(" ", string.Empty);
         }
 
-        public bool? GetPassport()
-        {
-            DataTable result = _sqlExecutor.ExecuteQuery($"select * from passports where num = '{HashCalculator.CalculateHash(_passport)}' limit 1;");
-
-            if (result.Rows.Count > 0)
-                return Convert.ToBoolean(result.Rows[0].ItemArray[1]);
-            else
-                return null;
-        }
+        public string Number { get; private set; }
     }
 }

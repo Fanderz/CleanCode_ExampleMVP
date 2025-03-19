@@ -1,5 +1,6 @@
 ﻿using System;
 using CleanCode_ExampleMVP.Models;
+using CleanCode_ExampleMVP.Services;
 
 namespace CleanCode_ExampleMVP.Presenters
 {
@@ -19,7 +20,8 @@ namespace CleanCode_ExampleMVP.Presenters
         {
             try
             {
-                bool? hasAccess = new Passport(passport).GetPassport();
+                string query = $"select * from passports where num = '{new Service().GetPassports(new Passport(passport))}' limit 1;";
+                bool? hasAccess = new Repository(DatabaseContext.ExecuteQuery(query)).Citizen.IsAccess;
 
                 if (hasAccess.HasValue == false)
                 {

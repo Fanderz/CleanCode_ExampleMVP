@@ -6,18 +6,13 @@ using System.Reflection;
 
 namespace CleanCode_ExampleMVP
 {
-    class SqlQueryExecutor
+    public static class DatabaseContext
     {
-        private string _connectionString = $"Data Source = {Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\db.sqlite";
+        private static string _connectionString = $"Data Source = {Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\db.sqlite";
 
-        private SQLiteConnection _connection;
+        private static SQLiteConnection _connection = new SQLiteConnection(_connectionString);
 
-        public SqlQueryExecutor()
-        {
-            _connection = new SQLiteConnection(_connectionString);
-        }
-
-        public DataTable ExecuteQuery(string query)
+        public static DataTable ExecuteQuery(string query)
         {
             if (string.IsNullOrEmpty(query))
                 throw new ArgumentNullException();

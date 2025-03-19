@@ -85,11 +85,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Models\Citizen.cs" />
     <Compile Include="Models\Passport.cs" />
     <Compile Include="Presenters\PresenterFactory.cs" />
     <Compile Include="Presenters\VotingPresenter.cs" />
     <Compile Include="Services\HashCalculator.cs" />
-    <Compile Include="Services\SqlQueryExecutor.cs" />
+    <Compile Include="Services\DatabaseContext.cs" />
+    <Compile Include="Services\Repository.cs" />
+    <Compile Include="Services\Service.cs" />
     <Compile Include="Views\MainView.cs">
       <SubType>Form</SubType>
     </Compile>
