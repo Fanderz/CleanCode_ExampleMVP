@@ -9,6 +9,7 @@ namespace CleanCode_ExampleMVP.Presenters
         private const string AccessAllowed = "ПРЕДОСТАВЛЕН";
         private const string AccessDenied = "НЕ ПРЕДОСТАВЛЕН";
 
+        private Citizen _citizen;
         private IView _view;
 
         public VotingPresenter(IView view)
@@ -16,20 +17,22 @@ namespace CleanCode_ExampleMVP.Presenters
             _view = view;
         }
 
-        public void TryGetAccess(string passport)
+        public void TryGetAccess(string inputNumber)
         {
             try
             {
-                string query = $"select * from passports where num = '{new Service().GetPassports(new Passport(passport))}' limit 1;";
-                bool? hasAccess = new Repository(DatabaseContext.ExecuteQuery(query)).Citizen.IsAccess;
+                _citizen = new Service().GetCitizen(inputNumber);
 
-                if (hasAccess.HasValue == false)
+                if (_citizen == null)
+                    throw new NullReferenceException();
+
+                if (_citizen.IsAccess.HasValue == false)
                 {
-                    _view.ShowMessage($"Паспорт «{passport}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
+                    _view.ShowMessage($"Паспорт «{inputNumber}» в списке участников дистанционного голосования НЕ НАЙДЕН.");
                     return;
                 }
 
-                _view.ShowMessage(BuildMessage(passport, hasAccess.Value));
+                _view.ShowMessage(BuildMessage(inputNumber, _citizen.IsAccess.Value));
             }
             catch(Exception ex)
             {

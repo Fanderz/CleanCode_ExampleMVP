@@ -1,9 +1,6 @@
-﻿using System;
-using System.Data;
-
-namespace CleanCode_ExampleMVP.Models
+﻿namespace CleanCode_ExampleMVP.Models
 {
-    class Citizen
+    public class Citizen
     {
         public Citizen(bool? isAccess)
         {

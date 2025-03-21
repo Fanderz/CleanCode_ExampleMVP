@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Data;
-using CleanCode_ExampleMVP.Services;
 
 namespace CleanCode_ExampleMVP.Models
 {
     public class Passport
     {
-        public Passport(string passport)
+        public Passport(string number)
         {
-            if (string.IsNullOrEmpty(passport))
+            if (string.IsNullOrEmpty(number))
                 throw new ArgumentNullException();
 
-            if (passport.Length < 10)
+            if (number.Length < 10)
                 throw new ArgumentOutOfRangeException();
 
-            Number = passport.Trim().Replace(" ", string.Empty);
+            Number = number.Trim().Replace(" ", string.Empty);
         }
 
         public string Number { get; private set; }

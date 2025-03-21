@@ -1,18 +1,16 @@
-﻿using CleanCode_ExampleMVP.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using CleanCode_ExampleMVP.Models;
 
 namespace CleanCode_ExampleMVP.Services
 {
-    class Service
-    { 
-        public string GetPassports(Passport passport)
+    public class Service
+    {
+        public Citizen GetCitizen(string number)
         {
-            return HashCalculator.CalculateHash(passport);
+            if (string.IsNullOrEmpty(number))
+                throw new ArgumentNullException();
+
+            return new Citizen(new Repository().IsAccess(DatabaseContext.ExecuteQuery(new PassportQueryCreator().GenerateQuery(new SHA256Calculator().CalculateHash(number)))));
         }
     }
 }
